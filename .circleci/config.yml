@@ -1,0 +1,61 @@
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:8.9.1
+
+version: 2
+jobs:
+  test:
+    <<: *defaults
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - npm-deps-{{ checksum "package.json" }}
+        - npm-deps-
+    - run:
+        name: Run npm install
+        command: npm install
+    - run:
+        name: Run tests
+        command: npm test
+    - save_cache:
+        paths:
+          - node_modules
+        key: npm-deps-{{ checksum "package.json" }}
+    - persist_to_workspace:
+        root: ~/repo
+        paths: .
+  publish:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/repo/.npmrc
+      - run:
+          name: Install Lerna
+          command: sudo npm install -g lerna
+      - run:
+          name: Publish package
+          command: lerna publish --independent  --skip-npm  --canary --yes
+
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*?/
+      - publish:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*?/
+            branches:
+              only:
+                - circleci

@@ -1,7 +1,7 @@
 import { Component, Prop } from '@stencil/core';
 
 import { IChemJson } from '@openchemistry/types';
-import { validateChemJson } from '@openchemistry/cjson-utils';
+import { validateChemJson, isChemJson } from '@openchemistry/cjson-utils';
 import { cjsonToMoljs } from '@openchemistry/cjson-utils';
 import { IAtomSpec } from '@openchemistry/types';
 
@@ -92,12 +92,11 @@ export class MoljsCjson {
   }
 
   setCjson() {
-    // if (isChemJson(this.cjsonProp)) {
-    //   this.cjson = this.cjsonProp as IChemJson;
-    // } else {
-    //   this.cjson = JSON.parse(this.cjsonProp);
-    // }
-    this.cjson = this.cjsonProp as IChemJson;
+    if (isChemJson(this.cjsonProp)) {
+      this.cjson = this.cjsonProp as IChemJson;
+    } else {
+      this.cjson = JSON.parse(this.cjsonProp);
+    }
     if (!validateChemJson(this.cjson)) {
       this.cjson = null;
     }

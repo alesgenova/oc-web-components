@@ -17,7 +17,7 @@ export interface IBonds {
 
 export interface IChemJson {
   atoms : IAtoms;
-  bonds : IBonds;
+  bonds? : IBonds;
   [propName: string]: any;
 }
 

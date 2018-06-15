@@ -5,9 +5,14 @@ function isChemJson(obj: any) : obj is IChemJson {
 }
 
 function validateChemJson(obj: IChemJson) : boolean {
-  validateAtoms(obj.atoms);
+  if (!validateAtoms(obj.atoms)) {
+    return false;
+  }
   if (obj.bonds) {
-    validateBonds(obj.atoms, obj.bonds);
+    // If bonds are invalid, throw them out but still keep the atoms
+    if (!validateBonds(obj.atoms, obj.bonds)) {
+      obj.bonds = undefined;
+    }
   }
   return true;
 }
@@ -27,6 +32,10 @@ function validateBonds(atoms: IAtoms, bonds: IBonds) : boolean {
   let nAtoms: number = numberOfAtoms(atoms);
   if (bonds.order) {
     if (bonds.order.length * 2 !== bonds.connections.index.length) {
+      return false;
+    }
+  } else {
+    if (bonds.connections.index.length % 2 !== 0) {
       return false;
     }
   }

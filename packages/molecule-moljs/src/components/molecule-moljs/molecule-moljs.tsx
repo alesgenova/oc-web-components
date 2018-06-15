@@ -111,7 +111,7 @@ export class MoljsCjson {
     this.viewer.setBackgroundColor(0xffffffff);
     let m = this.viewer.addModel();
     m.addAtoms(atoms);
-    m.setStyle({},{sphere:{}});
+    m.setStyle({},{stick:{}});
     this.viewer.zoomTo();
     this.viewer.render();
 

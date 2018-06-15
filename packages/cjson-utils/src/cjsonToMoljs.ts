@@ -49,8 +49,20 @@ function bondsToMoljs(atomsIn: IAtoms,
                       bondsIn: IBonds,
                       atoms: IAtomSpec[]) : IAtomSpec[] {
   // let nAtoms : number = numberOfAtoms(atomsIn);
-  if (atomsIn || bondsIn) {
-
+  let nBonds: number = bondsIn.connections.index.length / 2;
+  for (let i = 0; i < nBonds; ++i) {
+    let iAtom: number = bondsIn.connections.index[i * 2];
+    let jAtom: number = bondsIn.connections.index[i * 2 + 1];
+    if (atoms[iAtom].bonds === undefined) {
+      atoms[iAtom].bonds = [];
+    }
+    atoms[iAtom].bonds!.push(jAtom);
+    if (bondsIn.order) {
+      if (atoms[iAtom].bondOrder === undefined) {
+        atoms[iAtom].bondOrder = [];
+      }
+      atoms[iAtom].bondOrder!.push(bondsIn.order[i]);
+    }
   }
   return atoms;
 }

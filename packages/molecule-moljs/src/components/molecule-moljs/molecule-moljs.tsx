@@ -5,10 +5,7 @@ import { validateChemJson, isChemJson } from '@openchemistry/cjson-utils';
 import { cjsonToMoljs } from '@openchemistry/cjson-utils';
 import { IAtomSpec } from '@openchemistry/types';
 
-
-// import { benzene } from '../data/benzene';
-
-let $3Dmol = window['$3Dmol'];
+declare var $3Dmol: any;
 
 @Component({
   tag: 'oc-molecule-moljs',
@@ -47,6 +44,7 @@ export class MoljsCjson {
    */
   componentDidLoad() {
     console.log('Component has been rendered');
+    // console.log(mol3d);
     let config = { };
     if (!this.viewer) {
       this.viewer = $3Dmol.createViewer( 'mol-viewer', config );
